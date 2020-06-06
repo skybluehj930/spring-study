@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.iu.s3.board.notice.NoticeDAO">
+	<insert id="setInsert" parameterType="com.iu.s3.board.BoardVO">
+		<selectKey keyProperty="num" resultType="java.lang.Long" order="BEFORE">
+			select board_seq.nextval from dual
+		</selectKey>
+		
+		
+		insert into notice (num, title, writer, contents, createDate, hit)
+		values(#{num}, #{title}, #{writer}, #{contents}, sysdate, 0)
+	</insert>
+	
+	<update id="setUpdate" parameterType="com.iu.s3.board.BoardVO">
+		update notice set title=#{title}, contents=#{contents} where num=#{num}
+	</update>
+	
+	<delete id="setDelete" parameterType="com.iu.s3.board.BoardVO">
+		delete notice where num=#{num}
+	</delete>
+	
+	<resultMap type="com.iu.s3.board.notice.NoticeVO" id="selectResult">
+		<!-- PK 연결 -->
+		<id column="num" property="num"></id>
+		<result column="title" property="title"/>
+		<result column="writer" property="writer"/>
+		<result column="contents" property="contents"/>
+		<result column="createDate" property="createDate"/>
+		<result column="hit" property="hit"/>
+		<collection property="noticeFileVOs" javaType="java.util.List" ofType="com.iu.s3.board.notice.noticeFile.NoticeFileVO">
+			<id column="fileNum" property="fileNum"/>
+			<result column="fileName" property="fileName"/>
+			<result column="oriName" property="oriName"/>
+		</collection>
+	
+	</resultMap>
+	
+	<select id="getSelect" parameterType="com.iu.s3.board.BoardVO" resultMap="selectResult">
+		select N.*, NF.*
+		from notice N left join noticeFile NF
+		on(N.num = NF.num)
+		where N.num=#{num}
+	</select>
+	
+	<select id="getSelectList" resultType="com.iu.s3.board.notice.NoticeVO">
+		select * from notice order by num desc
+	</select>
+	
+	
+</mapper>  

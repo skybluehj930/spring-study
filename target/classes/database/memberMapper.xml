@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="com.iu.s3.member.MemberDAO">
+  	<!-- 현재 파일내에서 중복 X -->
+  	<!-- 다른 맵퍼의 id와는 중복 가능 -->
+  	<!-- 맵퍼의 id는 DAO의 메서드명과 일치 -->
+  	<!-- 
+  		parameterType
+  		DAO에 넘겨주는 DataType 
+  		풀패키지명으로 작성 : 패키지명.클래스명
+  	 -->
+  	<insert id="setMember" parameterType="com.iu.s3.member.MemberVO">
+  		insert into member
+  	<!-- 
+  		#{getter의 이름: get을 제외하고 첫글자는 소문자로}
+  		ex) getId    > id
+  	 -->	
+  		values (#{id}, #{pw}, #{name}, #{age}, #{birth})  	
+  	</insert>
+  	
+  	<delete id="setDelete" parameterType="java.lang.String">
+  	<!-- 파라미터 타입이 String 또는 Primitive type일 경우 -->
+  	<!-- DAO에서 넘겨주는 변수명으로 작성 -->
+  		delete member where id=#{idx}
+  	</delete>
+  	
+  	<resultMap type="com.iu.s3.member.MemberVO" id="login">
+  		<!-- primary key -->
+  		<id column="id" property="id"/>
+  		<result column="pw" property="pw"/>
+  		<result column="name" property="name"/>
+  		<result column="age" property="age"/>
+  		<result column="birth" property="birth"/>
+  		<association property="memberFileVO"  javaType="com.iu.s3.memberFile.MemberFileVO">
+	  		<id column="fileNum" property="fileNum"/>
+	  		<result column="fileName" property="fileName"/>
+	  		<result column="oriName" property="oriName"/>	
+  		</association>
+  	
+  	</resultMap>
+  	
+  	<select resultMap="login" id="getMember" parameterType="java.util.Map">
+  	<!-- 파라미터타입이 Map일 경우  -->
+  	<!-- #{map의 key} -->
+  	<!-- value가 Class Type인 경우 -->
+  	<!-- #{map의 key.setter의이름} -->
+  		select M.*, MF.* 
+		from member M left Join memberFile MF
+		on (M.id=MF.id)
+		where M.id=#{vo.id} and M.pw=#{vo.pw} 
+  	</select>  	
+  	
+  	<update id="setUpdate" parameterType="com.iu.s3.member.MemberVO" >
+  		update member set age=#{age}, name=#{name} where id=#{id}
+  	</update>
+  	
+  
+  </mapper>

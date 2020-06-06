@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="com.iu.s3.board.notice.noticeFile.NoticeFileDAO">
+	<insert id="setNoticeFile" parameterType="com.iu.s3.board.notice.noticeFile.NoticeFileVO">
+		insert into noticeFile values(board_seq.nextval, #{num}, #{fileName}, #{oriName})	
+	</insert>
+	
+	<select id="getNoticeFile" parameterType="com.iu.s3.board.notice.noticeFile.NoticeFileVO" resultType="com.iu.s3.board.notice.noticeFile.NoticeFileVO">
+		select * from noticeFile where fileNum=#{fileNum}
+	</select>	
+  
+  </mapper>
